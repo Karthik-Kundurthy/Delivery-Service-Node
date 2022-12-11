@@ -6,6 +6,9 @@ const {
   updateAddress,
   deleteEmployee,
   getAllDepartments,
+  getAllIngredients,
+  deleteIngredient,
+  addDrone
 } = require("./utils/queryHelpers");
 const app = express();
 const cors = require("cors");
@@ -27,21 +30,21 @@ const corsOptions = {
 };
 app.use(cors(corsOptions));
 
-app.get("/departments", async function (request, response) {
-  try {
-    const [result] = await getAllDepartments();
-    response.send({ success: true, result });
-  } catch (error) {
-    response.status(500).send({
-      success: false,
-      error: genericError,
-    });
-  }
-});
+// app.get("/departments", async function (request, response) {
+//   try {
+//     const [result] = await getAllDepartments();
+//     response.send({ success: true, result });
+//   } catch (error) {
+//     response.status(500).send({
+//       success: false,
+//       error: genericError,
+//     });
+//   }
+// });
 
 app.get("/", async function (request, response) {
   try {
-    const [result] = await getAllEmployees();
+    const [result] = await getAllIngredients();
     response.send({ success: true, result });
   } catch (error) {
     response.status(500).send({
@@ -51,32 +54,33 @@ app.get("/", async function (request, response) {
   }
 });
 
-app.get("/:id", async function (request, response) {
-  const { id } = request.params;
-  try {
-    const [result] = await getEmployee(id);
-    if (result.length > 0) {
-      response.send({ success: true, result: result[0] });
-    } else {
-      response.status(404).send({
-        success: false,
-        error: `No employee found with id ${id}`,
-      });
-    }
-  } catch (error) {
-    response.status(500).send({
-      success: false,
-      error: genericError,
-    });
-  }
-});
+// app.get("/:id", async function (request, response) {
+//   const { id } = request.params;
+//   try {
+//     const [result] = await getEmployee(id);
+//     if (result.length > 0) {
+//       response.send({ success: true, result: result[0] });
+//     } else {
+//       response.status(404).send({
+//         success: false,
+//         error: `No employee found with id ${id}`,
+//       });
+//     }
+//   } catch (error) {
+//     response.status(500).send({
+//       success: false,
+//       error: genericError,
+//     });
+//   }
+// });
 
-app.post("/", async function (request, response) {
+app.put("/", async function (request, response) {
   try {
-    const { name, department, address } = request.body;
-    const [result] = await addEmployee(name, department, address);
+    const { id, tag, barcode, packages, price } = request.body;
+    const [result] = await addDrone(id, tag, barcode, packages, price);
+    console.log(result)
     if (result.insertId) {
-      const [data] = await getEmployee(result.insertId);
+      const [data] = await getAllIngredients(result.insertId);
       response.send({ success: true, result: data[0] });
     } else {
       response.status(500).send({
@@ -92,39 +96,39 @@ app.post("/", async function (request, response) {
   }
 });
 
-app.put("/:id", async function (request, response) {
-  try {
-    const { address } = request.body;
-    const { id } = request.params;
-    const [result] = await updateAddress(id, address);
-    if (result.affectedRows > 0) {
-      const [data] = await getEmployee(id);
-      response.send({ success: true, result: data[0] });
-    } else {
-      response.status(400).send({
-        success: false,
-        error: genericError,
-      });
-    }
-  } catch (error) {
-    console.log(error);
-    response.status(500).send({
-      success: false,
-      error: genericError,
-    });
-  }
-});
+// app.put("/:id", async function (request, response) {
+//   try {
+//     const { address } = request.body;
+//     const { id } = request.params;
+//     const [result] = await updateAddress(id, address);
+//     if (result.affectedRows > 0) {
+//       const [data] = await getEmployee(id);
+//       response.send({ success: true, result: data[0] });
+//     } else {
+//       response.status(400).send({
+//         success: false,
+//         error: genericError,
+//       });
+//     }
+//   } catch (error) {
+//     console.log(error);
+//     response.status(500).send({
+//       success: false,
+//       error: genericError,
+//     });
+//   }
+// });
 
 app.delete("/:id", async function (request, response) {
   try {
-    const { id } = request.params;
-    const [result] = await deleteEmployee(id);
+    const { barcode } = request.params;
+    const [result] = await deleteIngredient(barcode);
     if (result.affectedRows > 0) {
       response.send({ success: true });
     } else {
       response.status(400).send({
         success: false,
-        error: genericError,
+        error: "0 rows affected",
       });
     }
   } catch (error) {
@@ -136,4 +140,4 @@ app.delete("/:id", async function (request, response) {
   }
 });
 
-app.listen(8001);
+app.listen(3000);

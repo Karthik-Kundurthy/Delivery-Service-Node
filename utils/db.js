@@ -4,10 +4,13 @@ async function getConnection() {
   const connection = await mysql.createConnection({
     host: "localhost",
     user: "root",
-    password: "",
-    database: "codingdeft",
+    password: "HiBuddies0304$$",
+    database: "restaurant_supply_express",
   });
+  console.log(connection);
   return connection;
 }
 
 module.exports = getConnection;
+
+
