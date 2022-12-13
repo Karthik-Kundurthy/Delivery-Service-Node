@@ -43,7 +43,7 @@ const getAllIngredients = async () => {
   //   "select e.id,e.name,d.name department,e.address from employee e,department d where e.department=d.id order by e.id"
   // );
   return connection.execute(
-    "select * from display_ingredient_view"
+    "select * from display_ingredient_view;"
   )
 };
 
@@ -53,7 +53,47 @@ const getAllServices = async () => {
   //   "select e.id,e.name,d.name department,e.address from employee e,department d where e.department=d.id order by e.id"
   // );
   return connection.execute(
-    "select * from display_service_view"
+    "select * from display_service_view;"
+  )
+};
+
+const getAllOwners = async () => {
+  const connection = await getConnection();
+  // return connection.execute(
+  //   "select e.id,e.name,d.name department,e.address from employee e,department d where e.department=d.id order by e.id"
+  // );
+  return connection.execute(
+    "select * from display_owner_view;"
+  )
+};
+
+const getAllEmployees = async () => {
+  const connection = await getConnection();
+  // return connection.execute(
+  //   "select e.id,e.name,d.name department,e.address from employee e,department d where e.department=d.id order by e.id"
+  // );
+  return connection.execute(
+    "select * from display_employee_view;"
+  )
+};
+
+const getAllPilots = async () => {
+  const connection = await getConnection();
+  // return connection.execute(
+  //   "select e.id,e.name,d.name department,e.address from employee e,department d where e.department=d.id order by e.id"
+  // );
+  return connection.execute(
+    "select * from display_pilot_view;"
+  )
+};
+
+const getAllLocations = async () => {
+  const connection = await getConnection();
+  // return connection.execute(
+  //   "select e.id,e.name,d.name department,e.address from employee e,department d where e.department=d.id order by e.id"
+  // );
+  return connection.execute(
+    "select * from display_location_view;"
   )
 };
 
@@ -97,6 +137,7 @@ const deleteIngredient = async (iname) => {
 
 
 const addDrone = async(id, tag, barcode, packages, price) => {
+  console.log("Creating Drone: " + id + ", " + tag + ", " + barcode + ", " + packages + ", " + price)
   const connection = await getConnection();
   return connection.execute('CALL load_drone(?, ?, ?, ?, ?)', [id, tag, barcode, packages, price])
 }
@@ -105,6 +146,38 @@ const addOwner = async(username, fname, lname, address, bdate) => {
   const connection = await getConnection();
   return connection.execute('CALL add_owner(?, ?, ?, ?, ?)', [username, fname, lname, address, bdate])
 }
+
+const addEmployee = async(username, fname, lname, address, bdate, taxID, hired, experience, salary) => {
+  const connection = await getConnection();
+  return connection.execute('CALL add_employee(?, ?, ?, ?, ?, ?, ?, ?, ?)', [username, fname, lname, address, bdate, taxID, hired, experience, salary])
+}
+
+const hireEmployee = async(username, id) => {
+  const connection = await getConnection();
+  return connection.execute('CALL hire_employee(?, ?)', [username, id])
+}
+
+
+const addDeliveryService = async(service_id, service_name, service_home_base, service_manager) => {
+  const connection = await getConnection();
+  return connection.execute('CALL add_service(?, ?, ?, ?)', [service_id, service_name, service_home_base, service_manager])
+}
+
+const addPilot = async(pilot_username, pilot_licenseID, pilot_experience) => {
+  const connection = await getConnection();
+  return connection.execute('CALL add_pilot_role(?, ?, ?)', [pilot_username, pilot_licenseID, pilot_experience])
+}
+
+const manageService = async(manage_service_username, manage_service_ID) => {
+  const connection = await getConnection();
+  return connection.execute('CALL manage_service(?, ?)', [manage_service_username, manage_service_ID])
+}
+
+const removePilot = async(remove_pilot_username) => {
+  const connection = await getConnection();
+  return connection.execute('CALL remove_pilot_role(?)', [remove_pilot_username])
+}
+
 
 
 // const getAllDepartments = async () => {
@@ -121,7 +194,18 @@ module.exports = {
   // getAllDepartments,
   getAllIngredients,
   getAllServices,
-  deleteIngredient,
+  addPilot,
+  // deleteIngredient,
   addDrone,
-  addOwner
+  addEmployee,
+  hireEmployee,
+  addOwner,
+  addDeliveryService,
+  deleteIngredient,
+  manageService,
+  getAllOwners,
+  getAllEmployees,
+  getAllPilots,
+  getAllLocations,
+  removePilot
 };
